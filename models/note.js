@@ -1,34 +1,25 @@
-import mongoose from "mongoose";
-mongoose.set("strictQuery", false);
-
-const url = process.env.MONGODB_URI;
-console.log("connecting to...", url);
-mongoose
-  .connect(url)
-  .then(() => {
-    console.log("connected to mongodb");
-  })
-  .catch((error) => {
-    console.log("error to connecting to MongoDB ", error.message);
-  });
+import mongoose from 'mongoose'
 
 const noteSchema = new mongoose.Schema({
-  content: {
-    type: String,
-    minLength: 5,
-    required: true
-  },
-  important: Boolean,
-});
-
-noteSchema.set('toJSON', {
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id
-    delete returnedObject.__v
-  }
+    content: {
+        type: String,
+        required: true,
+        minLength: 5,
+    },
+    important: Boolean,
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }
 })
 
-const Note = mongoose.model("Note", noteSchema);
+noteSchema.set('toJSON', {
+    transform: (document, returedObject) => {
+        returedObject.id = returedObject._id.toString(),
+        delete returedObject._id,
+        delete returedObject.__v
+    }
+})
+const Note = mongoose.model('Note', noteSchema)
 
-export default Note;
+export default Note
